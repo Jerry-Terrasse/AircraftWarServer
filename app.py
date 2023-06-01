@@ -91,7 +91,7 @@ def check_fighting():
         if user in fight:
             return {"status": "success"}
     if user in waiting_list:
-        return {"status": "waiting"}
+        return {"status": "waiting", "reason": "in waiting list"}
     return {"status": "failed", "reason": "not in queue"}
 
 @app.post("/sync_score")
@@ -135,7 +135,7 @@ def finish():
         return {"status": "failed", "reason": "not in fighting"}
     return {"status": "success"}
 
-@app.get("/get_records")
+@app.post("/get_records")
 def get_records():
     username = request.form['username']
     password = request.form['password']

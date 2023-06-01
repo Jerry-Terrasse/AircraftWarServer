@@ -60,7 +60,7 @@ def en_queue():
     user = User(username, password)
     for fight in fighting_list:
         if user in fight:
-            return {"status": "failed", "reason": "already fighting"}
+            return {"status": "success"}
     if user in waiting_list:
         return {"status": "success"}
     waiting_list.append(user)

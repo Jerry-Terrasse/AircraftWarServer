@@ -39,6 +39,7 @@ users = [
 
 waiting_list = []
 fighting_list: list[Fight] = []
+rank_list = []
 
 app = Flask(__name__)
 
@@ -121,6 +122,7 @@ def finish():
     return {"status": "success"}
 
 def clear_fight():
+    global fighting_list
     fighting_list = [fight for fight in fighting_list if time.time() - fight.last_update < 60]
 
 if __name__ == "__main__":

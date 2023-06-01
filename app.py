@@ -32,7 +32,7 @@ class Fight:
             raise Exception("User not in fight")
 
 class Record:
-    def __init__(self, name: User, score: int, record_id: int, date: str):
+    def __init__(self, name: str, score: int, record_id: int, date: str):
         self.name = name
         self.score = score
         self.record_id = record_id
@@ -143,7 +143,7 @@ def get_records():
     user = User(username, password)
     if user not in users:
         return {"status": "failed", "reason": "wrong username or password"}
-    return {"status": "success", "records": records}
+    return {"status": "success", "records": [record.__dict__ for record in records]}
 
 def clear_fight():
     global fighting_list

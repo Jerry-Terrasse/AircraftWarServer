@@ -1,4 +1,5 @@
 from flask import Flask, request
+import time
 
 class User:
     def __init__(self, username, password):
@@ -15,10 +16,12 @@ class Fight:
         self.score2 = 0
         self.finished1 = False
         self.finished2 = False
+        self.last_update = time.time()
     def __contains__(self, __value: object) -> bool:
         return self.user1 == __value or self.user2 == __value
 
     def sync_score(self, user: User, score: int) -> int:
+        self.last_update = time.time()
         if user == self.user1:
             self.score1 = score
             return self.score2
@@ -50,6 +53,7 @@ def login():
 
 @app.post("/en_queue")
 def en_queue():
+    clear_fight()
     username = request.form['username']
     password = request.form['password']
     user = User(username, password)
@@ -69,6 +73,7 @@ def en_queue():
 
 @app.post("/check_fighting")
 def check_fighting():
+    clear_fight()
     username = request.form['username']
     password = request.form['password']
     user = User(username, password)
@@ -114,6 +119,9 @@ def finish():
     else:
         return {"status": "failed", "reason": "not in fighting"}
     return {"status": "success"}
+
+def clear_fight():
+    fighting_list = [fight for fight in fighting_list if time.time() - fight.last_update < 60]
 
 if __name__ == "__main__":
     app.run(port=7000, debug=True)

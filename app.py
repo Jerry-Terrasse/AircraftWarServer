@@ -1,5 +1,6 @@
 from flask import Flask, request
 import time
+import pickle
 
 class User:
     def __init__(self, username, password):
@@ -46,7 +47,6 @@ users = [
 
 waiting_list = []
 fighting_list: list[Fight] = []
-rank_list = []
 
 records = []
 
@@ -126,6 +126,7 @@ def finish():
                 score = fight.score2
             
             records.append(Record(user.username, score, len(records), str(int(time.time()*1000))))
+            save_records()
             
             if fight.finished1 and fight.finished2:
                 fighting_list.remove(fight)
@@ -149,5 +150,18 @@ def clear_fight():
     global fighting_list
     fighting_list = [fight for fight in fighting_list if time.time() - fight.last_update < 60]
 
+def save_records():
+    with open("records.pickle", "wb") as f:
+        pickle.dump(records, f)
+
+def load_records():
+    global records
+    try:
+        with open("records.pickle", "rb") as f:
+            records = pickle.load(f)
+    except:
+        pass
+
 if __name__ == "__main__":
+    load_records()
     app.run(port=7000, debug=True)
